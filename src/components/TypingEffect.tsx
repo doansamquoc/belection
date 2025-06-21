@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const words = ["Welcome to Votely.", "Let's get started."];
+const words = ["Welcome to VoteChain.", "Let's get started."];
 
 const TypingEffect = () => {
   const [text, setText] = useState("");
