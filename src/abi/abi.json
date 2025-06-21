@@ -128,7 +128,7 @@
             },
             {
                 "internalType": "string[]",
-                "name": "optionNames",
+                "name": "optionTexts",
                 "type": "string[]"
             },
             {
@@ -145,6 +145,45 @@
                 "internalType": "uint256",
                 "name": "votedOptionId",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_creator",
+                "type": "address"
+            }
+        ],
+        "name": "getElectionSummariesByCreator",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "ids",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "titles",
+                "type": "string[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "deadlines",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "createdAts",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "participants",
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
