@@ -127,6 +127,11 @@
                 "type": "uint256"
             },
             {
+                "internalType": "uint256",
+                "name": "participantCount",
+                "type": "uint256"
+            },
+            {
                 "internalType": "string[]",
                 "name": "optionTexts",
                 "type": "string[]"
@@ -184,78 +189,6 @@
                 "internalType": "uint256[]",
                 "name": "participants",
                 "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_creator",
-                "type": "address"
-            }
-        ],
-        "name": "getElectionsByCreator",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_electionId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_voter",
-                "type": "address"
-            }
-        ],
-        "name": "getVotedOption",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "voted",
-                "type": "bool"
-            },
-            {
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_electionId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_voter",
-                "type": "address"
-            }
-        ],
-        "name": "hasVoted",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
             }
         ],
         "stateMutability": "view",
