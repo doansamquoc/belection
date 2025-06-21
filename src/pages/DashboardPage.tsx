@@ -41,11 +41,7 @@ const DashboardPage = () => {
     getElections();
   }, [user]);
 
-  return (
-    <div className='p-4'>
-      <ElectionWrapper elections={elections} isFetching={isFetching} />
-    </div>
-  );
+  return <ElectionWrapper elections={elections} isFetching={isFetching} />;
 };
 
 export default DashboardPage;
