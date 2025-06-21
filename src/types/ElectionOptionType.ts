@@ -1,5 +1,5 @@
 export interface ElectionOptionType {
-  id: string;
+  id?: string;
   text: string;
-  voteCount: number;
+  voteCount?: number;
 }
