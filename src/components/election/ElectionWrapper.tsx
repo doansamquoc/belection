@@ -9,7 +9,7 @@ interface ElectionWrapperProps {
 
 const ElectionWrapper = ({ elections, isFetching }: ElectionWrapperProps) => {
   return (
-    <div className='grid grid-cols-1 space-y-2'>
+    <div className='grid grid-cols-1 space-y-4'>
       {isFetching
         ? Array.from({ length: 4 }).map((_, i) => (
             <ElectionCardSkeleton key={i} />
