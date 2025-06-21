@@ -134,9 +134,9 @@ const CreateForm = () => {
             </span>
           </Label>
 
-          <div className='space-y-3 bg-muted/20 rounded-lg p-4'>
+          <div className='space-y-3'>
             {options.map((option, index) => (
-              <div className='flex gap-3 items-center group' key={index}>
+              <div className='flex gap-2 items-center group' key={index}>
                 <div className='flex items-center justify-center w-8 h-8 bg-primary/10 text-primary text-sm font-medium rounded-full shrink-0'>
                   {index + 1}
                 </div>
@@ -152,8 +152,8 @@ const CreateForm = () => {
                 />
                 {options.length > 2 && (
                   <Button
-                    size='sm'
-                    variant='ghost'
+                    size={"icon"}
+                    variant={"secondary"}
                     type='button'
                     onClick={() => handleRemoveOption(index)}
                     className='transition-opacity duration-200 hover:bg-destructive/10 hover:text-destructive'
@@ -192,9 +192,7 @@ const CreateForm = () => {
             <Calendar className='w-4 h-4' />
             Election Deadline
           </Label>
-          <div className='bg-muted/20 rounded-lg p-4'>
-            <DateAndTimePicker />
-          </div>
+          <DateAndTimePicker />
         </div>
 
         <div className='flex gap-3 pt-4 border-t border-border/50'>
