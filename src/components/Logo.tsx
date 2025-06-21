@@ -1,8 +1,12 @@
+import { Button } from "./ui/button";
+
 const Logo = () => {
   return (
-    <a href='/' className='font-secondary text-2xl'>
-      VoteChain
-    </a>
+    <Button variant={"ghost"} size={"icon"} asChild>
+      <a href='/'>
+        <img src='/logo-white.svg' alt='Logo' className='w-6 h-6' />
+      </a>
+    </Button>
   );
 };
 
