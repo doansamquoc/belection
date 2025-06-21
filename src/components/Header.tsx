@@ -1,4 +1,4 @@
-import { House, Sparkles } from "lucide-react";
+import { LayoutDashboard, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import UserNavigation from "./navigations/UserNavigation";
@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <header className='border-b border-border/30 sticky top-0 bg-background/80 backdrop-blur-md z-50 transition-all duration-300'>
-      <div className='w-full max-w-4xl mx-auto flex justify-between items-center border-x border-border/30 px-6 py-4'>
+      <div className='w-full max-w-4xl mx-auto flex justify-between items-center px-6 py-4'>
         <div className='flex items-center gap-3'>
           {isDashboard ? (
             <div className='flex items-center gap-2'>
@@ -22,15 +22,10 @@ const Header = () => {
               </div>
             </div>
           ) : (
-            <Button
-              variant='ghost'
-              size='sm'
-              asChild
-              className='hover:bg-primary/10 hover:text-primary transition-colors duration-200'
-            >
+            <Button asChild>
               <Link to='/' className='flex items-center gap-2'>
-                <House className='w-4 h-4' />
-                <span className='hidden sm:inline'>Home</span>
+                <LayoutDashboard className='w-4 h-4' />
+                <span className='hidden sm:inline'>Dashboard</span>
               </Link>
             </Button>
           )}
