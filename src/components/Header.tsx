@@ -10,7 +10,7 @@ const Header = () => {
     location.pathname === "/" || location.pathname.startsWith("/page");
 
   return (
-    <header className='border-b border-dashed'>
+    <header className='border-b border-dashed sticky top-0 bg-background'>
       <div className='w-full max-w-4xl mx-auto flex justify-between border-x border-dashed p-4'>
         {isDashboard ? (
           <Logo />
