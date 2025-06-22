@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { BadgePlus, Settings, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const UserNavigation = () => {
   const { user, isLoading, logout } = useAuth();
@@ -25,8 +26,10 @@ const UserNavigation = () => {
 
   return (
     <div className='flex gap-3'>
-      <Button>
-        <BadgePlus /> Create
+      <Button asChild>
+        <Link to={"/create"}>
+          <BadgePlus /> Create
+        </Link>
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
