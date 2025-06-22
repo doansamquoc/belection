@@ -9,8 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { BadgePlus, Settings, User } from "lucide-react";
+import { BadgePlus, LogOut, Settings, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { magic } from "@/lib/magic";
 
 const UserNavigation = () => {
   const { user, isLoading, logout } = useAuth();
@@ -22,6 +23,14 @@ const UserNavigation = () => {
         <div className='w-9 h-9 rounded-full shimmer' />
       </div>
     );
+  }
+
+  async function handleShowUI() {
+    await magic.wallet.showUI();
+  }
+
+  async function handleShowSettings() {
+    await magic.user.showSettings();
   }
 
   return (
@@ -49,16 +58,27 @@ const UserNavigation = () => {
             <span className='text-sm'>Hi, {user?.email}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='gap-2 cursor-pointer hover:bg-primary/10'>
+          <DropdownMenuItem
+            className='gap-2 cursor-pointer hover:bg-primary/10'
+            onClick={handleShowUI}
+          >
             <User className='w-4 h-4' />
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem className='gap-2 cursor-pointer hover:bg-primary/10'>
+          <DropdownMenuItem
+            className='gap-2 cursor-pointer hover:bg-primary/10'
+            onClick={handleShowSettings}
+          >
             <Settings className='w-4 h-4' />
             Settings
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant='destructive' onClick={logout}>
+          <DropdownMenuItem
+            variant='destructive'
+            className='gap-2 cursor-pointer hover:bg-primary/10'
+            onClick={logout}
+          >
+            <LogOut className='w-4 h-4' />
             Logout
           </DropdownMenuItem>
         </DropdownMenuContent>

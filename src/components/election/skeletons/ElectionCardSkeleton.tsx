@@ -1,6 +1,6 @@
 const ElectionCardSkeleton = () => {
   return (
-    <div className='bg-card border rounded-lg p-6 animate-pulse'>
+    <div className='bg-muted/10 border rounded-lg p-6 animate-pulse'>
       <div className='space-y-4'>
         <div className='space-y-2'>
           <div className='h-6 bg-muted rounded-md w-3/4' />

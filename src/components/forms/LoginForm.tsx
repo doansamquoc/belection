@@ -1,4 +1,11 @@
-import { AlertCircleIcon, Loader2, Mail, Shield, Sparkles } from "lucide-react";
+import {
+  AlertCircleIcon,
+  CircleAlert,
+  Code2,
+  Loader2,
+  Mail,
+  Shield,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -53,7 +60,7 @@ export function LoginForm({
         <div className='space-y-6'>
           <div className='text-center space-y-2'>
             <div className='inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-4'>
-              <Shield className='w-8 h-8 text-primary' />
+              <Code2 className='w-8 h-8 text-primary' />
             </div>
             <TypingEffect />
             <p className='text-sm text-muted-foreground max-w-md mx-auto'>
@@ -94,7 +101,7 @@ export function LoginForm({
               </div>
             </div>
             <p className='text-xs text-muted-foreground flex items-center gap-1'>
-              <Sparkles className='w-3 h-3' />
+              <CircleAlert className='w-3 h-3' />
               We'll send you a secure magic link to sign in
             </p>
           </div>

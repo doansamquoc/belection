@@ -37,8 +37,8 @@ const Header = () => {
           ) : (
             <Button
               asChild
-              variant='outline'
-              className='group border-primary/20 hover:border-primary/40 hover:bg-primary/5'
+              variant='secondary'
+              className='group border-primary/20 hover:border-primary/40 hover:bg-primary/5 bg-muted/20'
             >
               <Link to='/' className='flex items-center gap-2'>
                 <LayoutDashboard className='w-4 h-4 group-hover:scale-110 transition-transform duration-200' />

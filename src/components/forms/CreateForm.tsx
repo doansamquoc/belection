@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
-import getContract from "@/lib/contract";
 import {
   Loader2,
   X,
@@ -11,14 +10,18 @@ import {
   Vote,
   CircleAlert,
   RefreshCcw,
+  AlertCircle,
 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import type { ElectionOptionType } from "@/types/ElectionOptionType";
 import DateAndTimePicker from "../DateAndTimePicker";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { generateShortId } from "@/utils/utils";
+import { generateShortId, optionsPlaceholder } from "@/utils/utils";
 import { useNavigate } from "react-router-dom";
+
+import { provider } from "@/lib/magic";
+import getContract from "@/lib/contract";
 
 const CreateForm = () => {
   const [title, setTitle] = useState("");
@@ -29,19 +32,6 @@ const CreateForm = () => {
     createEmptyOption(),
     createEmptyOption(),
   ]);
-
-  const optionsPlaceholder = [
-    "Blinding Lights - The Weeknd",
-    "The Twist - Chubby Checker",
-    "Smooth - Santana featuring Rob Thomas",
-    "Mack The Knife - Bobby Darin",
-    "Uptown Funk - Mark Ronson featuring Bruno Mars",
-    "How Do I Live - LeAnn Rimes",
-    "Party Rock Anthem - LMFAO featuring Lauren Bennett & GoonRock",
-    "I Gotta Feeling - The Black Eyed Peas",
-    "Macarena (Bayside Boys mix) - Los Del Rio",
-    "Shape of You - Ed Sheeran",
-  ];
 
   const handleOptionChange = (index: number, value: string) => {
     setOptions((prev) =>
@@ -66,14 +56,18 @@ const CreateForm = () => {
 
   const [isCreating, setCreating] = useState(false);
   const [duration, setDuration] = useState<number>(0);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   async function createElection() {
     setCreating(true);
+    setError("");
     const id = generateShortId();
+
     try {
-      const contract = getContract();
       const optionTexts = options.map((o) => o.text.trim()).filter(Boolean);
+      const signer = provider.getSigner();
+      const contract = getContract(signer);
       const tx = await contract.createElection(
         id,
         title,
@@ -83,8 +77,22 @@ const CreateForm = () => {
       await tx.wait();
 
       navigate(`/e/${id}`);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Transaction failed:", error);
+
+      let message = "An unexpected error occurred.";
+
+      if (error.code === 4001) {
+        message = "User rejected the transaction.";
+      } else if (error.message?.includes("paymaster")) {
+        message = "Paymaster rejected the operation. Please try again.";
+      } else if (error.message?.includes("gas")) {
+        message = "Gas estimation failed. Please try again.";
+      } else if (error.message?.includes("network")) {
+        message = "Network error. Please check your connection.";
+      }
+
+      setError(message);
     } finally {
       setCreating(false);
     }
@@ -95,8 +103,9 @@ const CreateForm = () => {
     options.every((opt) => opt.text.trim().length > 0) &&
     duration >= 0 &&
     options.length >= 2;
+
   return (
-    <div className='bg-card border rounded-xl p-4 space-y-8 shadow-sm hover:shadow-md transition-shadow duration-300'>
+    <div className='bg-muted/10 border rounded-xl p-4 space-y-8 shadow-sm hover:shadow-md transition-shadow duration-300'>
       <div className='space-y-2'>
         <div className='flex items-center gap-3'>
           <div className='p-2 bg-primary/10 rounded-lg'>
@@ -208,7 +217,6 @@ const CreateForm = () => {
           </Label>
           <DateAndTimePicker onChange={(d) => setDuration(d)} />
         </div>
-
         <div className='flex gap-3 pt-4 border-t border-border/50'>
           <Button
             type='reset'
@@ -238,6 +246,13 @@ const CreateForm = () => {
             </div>
           </Button>
         </div>
+        {error && (
+          <Alert variant={"destructive"}>
+            <AlertCircle />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         {!isFormValid && (
           <Alert variant={"default"}>
             <CircleAlert />

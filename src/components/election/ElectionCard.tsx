@@ -10,7 +10,7 @@ interface ElectionCardProps {
 const ElectionCard = ({ election }: ElectionCardProps) => {
   return (
     <Link to={`/e/${election.id}`} className='group block'>
-      <div className='bg-card border rounded-lg p-6 transition-all duration-200 hover:shadow-lg hover:border-primary/20 group-hover:bg-card/80'>
+      <div className='bg-muted/10 border rounded-lg p-6 transition-all duration-200 hover:shadow-lg hover:border-primary/20 group-hover:bg-muted/20'>
         <div className='space-y-4'>
           <h1 className='text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2'>
             {election.title}

@@ -1,6 +1,7 @@
 import ElectionWrapper from "@/components/election/ElectionWrapper";
 import { useAuth } from "@/contexts/AuthContext";
 import getContract from "@/lib/contract";
+import { provider } from "@/lib/magic";
 import type { ElectionSumaryType } from "@/types/ElectionSummaryType";
 import type { PaginatedElectionType } from "@/types/PaginatedElectionType";
 import { useEffect, useState } from "react";
@@ -24,7 +25,8 @@ const DashboardPage = () => {
   async function getElections(offset: number = 0) {
     try {
       setFetching(true);
-      const contract = getContract();
+      const signer = provider.getSigner();
+      const contract = getContract(signer);
 
       const [
         electionSummaries,
@@ -34,7 +36,7 @@ const DashboardPage = () => {
         hasNextPage,
         hasPreviousPage,
       ] = await contract.getPaginatedElectionSummariesByCreator(
-        "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
+        user?.publicAddress,
         limit,
         offset
       );
