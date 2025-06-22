@@ -10,12 +10,14 @@ import {
   Calendar,
   Vote,
   CircleAlert,
+  RefreshCcw,
 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import type { ElectionOptionType } from "@/types/ElectionOptionType";
 import DateAndTimePicker from "../DateAndTimePicker";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { generateUUID } from "@/utils/utils";
 
 const CreateForm = () => {
   const [title, setTitle] = useState("");
@@ -62,13 +64,21 @@ const CreateForm = () => {
   };
 
   const [isCreating, setCreating] = useState(false);
+  const [duration, setDuration] = useState<number>(0);
 
   async function createElection() {
     try {
       setCreating(true);
       const contract = getContract();
-      const tx = await contract.createElection(title, ["bob", "alice"], 3600);
-      await tx.wait();
+      const optionTexts = options.map((o) => o.text.trim()).filter(Boolean);
+      const tx = await contract.createElection(
+        generateUUID(),
+        title,
+        optionTexts,
+        duration
+      );
+      const reicept = await tx.wait();
+      console.log(reicept);
     } catch (error) {
       console.error(error);
     } finally {
@@ -77,10 +87,10 @@ const CreateForm = () => {
   }
 
   const isFormValid =
-    title.trim() &&
-    options.every((opt) => opt.text.trim()) &&
+    title.trim().length > 0 &&
+    options.every((opt) => opt.text.trim().length > 0) &&
+    duration >= 0 &&
     options.length >= 2;
-
   return (
     <div className='bg-card border rounded-xl p-4 space-y-8 shadow-sm hover:shadow-md transition-shadow duration-300'>
       <div className='space-y-2'>
@@ -192,7 +202,7 @@ const CreateForm = () => {
             <Calendar className='w-4 h-4' />
             Election Deadline
           </Label>
-          <DateAndTimePicker />
+          <DateAndTimePicker onChange={(d) => setDuration(d)} />
         </div>
 
         <div className='flex gap-3 pt-4 border-t border-border/50'>
@@ -202,7 +212,7 @@ const CreateForm = () => {
             className='px-6'
             disabled={isCreating}
           >
-            Reset
+            <RefreshCcw /> Reset
           </Button>
           <Button
             type='submit'
