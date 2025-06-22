@@ -1,5 +1,5 @@
 export interface ElectionSumaryType {
-  id: number;
+  id: string;
   creator: string;
   title: string;
   deadline: number;
