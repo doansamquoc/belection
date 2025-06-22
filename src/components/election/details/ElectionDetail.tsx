@@ -1,53 +1,55 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import getContract from "@/lib/contract";
 import type { ElectionDetailType } from "@/types/ElectionDetailType";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Share2, Copy, QrCode } from "lucide-react";
+import type { ElectionOptionType } from "@/types/ElectionOptionType";
+import ElectionDetailSkeleton from "../skeletons/ElectionDetailSkeleton";
+import ElectionDetailCard from "./ElectionDetailCard";
 
 const ElectionDetail = () => {
   const { id: electionId } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [election, setElection] = useState<ElectionDetailType | null>(null);
   const [isFetching, setFetching] = useState(true);
+  const [selected, setSelected] = useState<number | undefined>(undefined);
 
   async function fetchElection() {
     try {
       setFetching(true);
       const contract = getContract();
       const result = await contract.getElection(
-        Number(electionId),
-        user?.publicAddress
+        electionId,
+        "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199"
       );
 
-      const [
-        title,
-        creator,
-        deadline,
-        createdAt,
-        participantCount,
-        optionTexts,
-        voteCounts,
-        hasVoted,
-        votedOptionId,
-      ] = result;
+      const [summary, options, hasEnded, hasVoted, votedOptionId] = result;
 
-      const options = optionTexts.map((text: string, index: number) => ({
-        text,
-        voteCount: Number(voteCounts[index]),
+      const optionsData: ElectionOptionType[] = options.map((opt: any) => ({
+        text: opt.text,
+        voteCount: Number(opt.voteCount),
       }));
 
       const electionData: ElectionDetailType = {
-        id: Number(electionId),
-        title,
-        creator,
-        deadline: Number(deadline),
-        createdAt: Number(createdAt),
-        participants: participantCount,
-        options,
+        id: electionId!,
+        title: summary.title,
+        creator: summary.creator,
+        deadline: Number(summary.deadline),
+        createdAt: Number(summary.createdAt),
+        participants: Number(summary.participantCount),
+        options: optionsData,
+        hasEnded,
         hasVoted,
         votedOptionId: Number(votedOptionId),
       };
+
       setElection(electionData);
+      setSelected(hasVoted ? Number(votedOptionId) : undefined);
     } catch (error) {
       console.error(error);
     } finally {
@@ -56,36 +58,48 @@ const ElectionDetail = () => {
   }
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !electionId) return;
     fetchElection();
   }, [electionId, user]);
+
+  if (isFetching) {
+    return <ElectionDetailSkeleton />;
+  }
+
+  if (!election) {
+    return (
+      <Alert>
+        <AlertDescription>
+          Election not found. Please check the URL and try again.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
-    <div className='p-4'>
-      {isFetching ? (
-        <p>Đang tải...</p>
-      ) : election ? (
-        <>
-          <h1 className='text-xl font-bold'>{election.title}</h1>
-          <p>Deadline: {new Date(election.deadline * 1000).toLocaleString()}</p>
-          <p>Created: {new Date(election.createdAt * 1000).toLocaleString()}</p>
-          <ul className='mt-4 space-y-2'>
-            {election.options.map((opt, idx) => (
-              <li key={idx} className='border p-2 rounded'>
-                {opt.text} — {opt.voteCount} votes
-              </li>
-            ))}
-          </ul>
-          <p className='mt-4 font-medium'>
-            {election.hasVoted
-              ? `Bạn đã bỏ phiếu: ${
-                  election.options[election.votedOptionId]?.text
-                }`
-              : "Bạn chưa bỏ phiếu"}
-          </p>
-        </>
-      ) : (
-        <p>Không tìm thấy cuộc bầu cử</p>
-      )}
+    <div className='space-y-8'>
+      <ElectionDetailCard
+        election={election}
+        electionId={electionId!}
+        selected={Number(selected)}
+        fetchElection={fetchElection}
+      />
+      <Card>
+        <CardContent className='flex flex-col md:flex-row gap-4 items-start justify-between'>
+          <div className='flex items-center gap-2 my-auto'>
+            <Share2 className='h-5 w-5' />
+            <span className='font-medium'>Share this election</span>
+          </div>
+          <div className='flex gap-2'>
+            <Button variant='outline' size='sm'>
+              <Copy /> Copy Link
+            </Button>
+            <Button variant='outline' size='sm'>
+              <QrCode /> QR code
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
