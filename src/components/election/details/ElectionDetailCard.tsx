@@ -14,29 +14,30 @@ import type { ElectionDetailType } from "@/types/ElectionDetailType";
 import { formatDate, shortenAddress } from "@/utils/utils";
 import { Calendar, CheckCircle, Clock, User, Users, Vote } from "lucide-react";
 import InfoBlock from "./InfoBlock";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import getContract from "@/lib/contract";
 
 interface ElectionDetailCardProps {
   electionId: string;
   election: ElectionDetailType;
-  selected: number;
 }
 
 const ElectionDetailCard = ({
   electionId,
   election,
-  selected,
 }: ElectionDetailCardProps) => {
-  const [isVoting, setIsVoting] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(selected);
-  const previousElectionState: ElectionDetailType = { ...election };
   const [electionState, setElectionState] =
     useState<ElectionDetailType>(election);
+  const previousElectionState: ElectionDetailType = { ...election };
+  const [selectedOption, setSelectedOption] = useState<number | undefined>(
+    electionState.hasVoted ? Number(electionState.votedOptionId) : undefined
+  );
+  const [isVoting, setIsVoting] = useState(false);
 
   const expired =
     electionState?.deadline !== 0 &&
     electionState?.deadline! < Math.floor(Date.now() / 1000);
+
   const canVote =
     electionState &&
     !electionState.hasVoted &&
@@ -67,10 +68,6 @@ const ElectionDetailCard = ({
       setIsVoting(false);
     }
   };
-
-  useEffect(() => {
-    setSelectedOption(selected);
-  }, [selected, electionId]);
 
   return (
     <Card>

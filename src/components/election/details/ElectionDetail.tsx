@@ -17,7 +17,6 @@ const ElectionDetail = () => {
   const { user } = useAuth();
   const [election, setElection] = useState<ElectionDetailType | null>(null);
   const [isFetching, setFetching] = useState(true);
-  const [selected, setSelected] = useState<number | undefined>(undefined);
 
   async function fetchElection() {
     try {
@@ -49,7 +48,6 @@ const ElectionDetail = () => {
       };
 
       setElection(electionData);
-      setSelected(hasVoted ? Number(votedOptionId) : undefined);
     } catch (error) {
       console.error(error);
     } finally {
@@ -78,11 +76,7 @@ const ElectionDetail = () => {
 
   return (
     <div className='space-y-8'>
-      <ElectionDetailCard
-        election={election}
-        electionId={electionId!}
-        selected={Number(selected)}
-      />
+      <ElectionDetailCard election={election} electionId={electionId!} />
       <Card>
         <CardContent className='flex flex-col md:flex-row gap-4 items-start justify-between'>
           <div className='flex items-center gap-2 my-auto'>
