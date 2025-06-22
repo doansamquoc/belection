@@ -17,7 +17,8 @@ import { Label } from "../ui/label";
 import type { ElectionOptionType } from "@/types/ElectionOptionType";
 import DateAndTimePicker from "../DateAndTimePicker";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { generateUUID } from "@/utils/utils";
+import { generateShortId } from "@/utils/utils";
+import { useNavigate } from "react-router-dom";
 
 const CreateForm = () => {
   const [title, setTitle] = useState("");
@@ -65,20 +66,23 @@ const CreateForm = () => {
 
   const [isCreating, setCreating] = useState(false);
   const [duration, setDuration] = useState<number>(0);
+  const navigate = useNavigate();
 
   async function createElection() {
+    setCreating(true);
+    const id = generateShortId();
     try {
-      setCreating(true);
       const contract = getContract();
       const optionTexts = options.map((o) => o.text.trim()).filter(Boolean);
       const tx = await contract.createElection(
-        generateUUID(),
+        id,
         title,
         optionTexts,
         duration
       );
-      const reicept = await tx.wait();
-      console.log(reicept);
+      await tx.wait();
+
+      navigate(`/e/${id}`);
     } catch (error) {
       console.error(error);
     } finally {

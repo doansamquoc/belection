@@ -1,7 +1,12 @@
 import { randomBytes, uuidV4 } from "ethers";
+import { nanoid } from "nanoid";
 
 export function generateUUID() {
   return uuidV4(randomBytes(16));
+}
+
+export function generateShortId() {
+  return nanoid(8); // e.g:"xC9f2Klq"
 }
 
 export const generateAvatarUrl = (seed: string) => {
