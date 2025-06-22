@@ -12,7 +12,17 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { ElectionDetailType } from "@/types/ElectionDetailType";
 import { formatDate, shortenAddress } from "@/utils/utils";
-import { Calendar, CheckCircle, Clock, User, Users, Vote } from "lucide-react";
+import {
+  Calendar,
+  ChartArea,
+  CheckCircle,
+  Clock,
+  Loader2,
+  Send,
+  User,
+  Users,
+  Vote,
+} from "lucide-react";
 import InfoBlock from "./InfoBlock";
 import { useState } from "react";
 import getContract from "@/lib/contract";
@@ -176,13 +186,21 @@ const ElectionDetailCard = ({
               onClick={handleVote}
               disabled={!canVote || isVoting}
               size='lg'
-              className='flex-1'
+              className='grow'
             >
-              {isVoting ? "Submitting..." : "Submit Vote"}
+              {isVoting ? (
+                <>
+                  <Loader2 className='animate-spin' /> Submitting ...
+                </>
+              ) : (
+                <>
+                  <Send /> Submit Vote
+                </>
+              )}
             </Button>
             {electionState.hasVoted || expired ? (
-              <Button variant='outline' size='lg' className='flex-1'>
-                View Results
+              <Button variant='outline' size='lg' className='grow'>
+                <ChartArea /> View Results
               </Button>
             ) : (
               ""
