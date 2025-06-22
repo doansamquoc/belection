@@ -24,6 +24,7 @@
     "ethers": "^6.14.4",
     "lucide-react": "^0.520.0",
     "magic-sdk": "^29.1.0",
+    "nanoid": "^5.1.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",
