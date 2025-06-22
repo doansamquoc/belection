@@ -41,7 +41,7 @@ const DashboardPage = () => {
 
       const elections: ElectionSumaryType[] = electionSummaries.map(
         (summary: any) => ({
-          id: Number(summary.id),
+          id: summary.id,
           title: summary.title,
           deadline: Number(summary.deadline),
           createdAt: Number(summary.createdAt),
