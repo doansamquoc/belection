@@ -14,51 +14,69 @@ import type { ElectionDetailType } from "@/types/ElectionDetailType";
 import { formatDate, shortenAddress } from "@/utils/utils";
 import { Calendar, CheckCircle, Clock, User, Users, Vote } from "lucide-react";
 import InfoBlock from "./InfoBlock";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import getContract from "@/lib/contract";
 
 interface ElectionDetailCardProps {
   electionId: string;
   election: ElectionDetailType;
   selected: number;
-  fetchElection: () => Promise<void>;
 }
 
 const ElectionDetailCard = ({
   electionId,
   election,
   selected,
-  fetchElection,
 }: ElectionDetailCardProps) => {
   const [isVoting, setIsVoting] = useState(false);
   const [selectedOption, setSelectedOption] = useState(selected);
+  const previousElectionState: ElectionDetailType = { ...election };
+  const [electionState, setElectionState] =
+    useState<ElectionDetailType>(election);
 
   const expired =
-    election?.deadline !== 0 &&
-    election?.deadline! < Math.floor(Date.now() / 1000);
+    electionState?.deadline !== 0 &&
+    electionState?.deadline! < Math.floor(Date.now() / 1000);
   const canVote =
-    election && !election.hasVoted && !expired && selectedOption !== undefined;
+    electionState &&
+    !electionState.hasVoted &&
+    !expired &&
+    selectedOption !== undefined;
 
   const handleVote = async () => {
-    if (selectedOption === undefined || !election) return;
+    if (selectedOption === undefined || !electionState) return;
     setIsVoting(true);
+
     try {
       const contract = getContract();
       const tx = await contract.vote(electionId, selectedOption);
-      const reicept = await tx.wait();
-      console.log(reicept);
-      await fetchElection();
+      await tx.wait();
+
+      setElectionState((prevElection) => {
+        const newElection = { ...prevElection };
+
+        newElection.participants += 1;
+        newElection.hasVoted = true;
+        newElection.votedOptionId = selectedOption;
+        return newElection;
+      });
     } catch (error) {
+      setElectionState(previousElectionState);
       console.error("Error voting:", error);
     } finally {
       setIsVoting(false);
     }
   };
+
+  useEffect(() => {
+    setSelectedOption(selected);
+  }, [selected, electionId]);
+
   return (
     <Card>
       <CardHeader className='space-y-3'>
         <div className='flex gap-2'>
-          {election.hasVoted && (
+          {electionState.hasVoted && (
             <Badge variant='secondary' className='flex items-center gap-1'>
               <CheckCircle className='h-3 w-3' />
               Voted
@@ -69,15 +87,15 @@ const ElectionDetailCard = ({
 
         <div className='flex flex-col gap-1'>
           <CardTitle className='text-xl break-words'>
-            {election.title}
+            {electionState.title}
           </CardTitle>
           <CardDescription className='flex items-center gap-2 text-sm'>
             <User className='h-4 w-4' />
             <span
               className='truncate max-w-[160px] text-muted-foreground'
-              title={election.creator}
+              title={electionState.creator}
             >
-              Created by {shortenAddress(election.creator)}
+              Created by {shortenAddress(electionState.creator)}
             </span>
           </CardDescription>
         </div>
@@ -88,18 +106,18 @@ const ElectionDetailCard = ({
           <InfoBlock
             icon={<Calendar className='h-4 w-4' />}
             label='Created'
-            value={formatDate(election.createdAt)}
+            value={formatDate(electionState.createdAt)}
           />
           <InfoBlock
             icon={<Clock className='h-4 w-4' />}
             label='Deadline'
-            value={formatDate(election.deadline)}
+            value={formatDate(electionState.deadline)}
             valueClass={expired ? "text-destructive" : ""}
           />
           <InfoBlock
             icon={<Users className='h-4 w-4' />}
             label='Participants'
-            value={election.participants}
+            value={electionState.participants}
           />
         </div>
 
@@ -112,12 +130,12 @@ const ElectionDetailCard = ({
           <RadioGroup
             value={selectedOption?.toString()}
             onValueChange={(val) => setSelectedOption(Number(val))}
-            disabled={election.hasVoted || expired}
+            disabled={electionState.hasVoted || expired}
           >
-            {election.options.map((option, index) => {
+            {electionState.options.map((option, index) => {
               const isSelected = index === selectedOption;
               const isVoted =
-                election.hasVoted && index === election.votedOptionId;
+                electionState.hasVoted && index === electionState.votedOptionId;
 
               return (
                 <div
@@ -129,7 +147,7 @@ const ElectionDetailCard = ({
                         : "border-border hover:border-muted"
                     }
                     ${
-                      election.hasVoted || expired
+                      electionState.hasVoted || expired
                         ? "opacity-70"
                         : "cursor-pointer"
                     }
@@ -165,7 +183,7 @@ const ElectionDetailCard = ({
             >
               {isVoting ? "Submitting..." : "Submit Vote"}
             </Button>
-            {election.hasVoted || expired ? (
+            {electionState.hasVoted || expired ? (
               <Button variant='outline' size='lg' className='flex-1'>
                 View Results
               </Button>
@@ -175,7 +193,7 @@ const ElectionDetailCard = ({
           </div>
         </section>
 
-        {election.hasVoted && (
+        {electionState.hasVoted && (
           <Alert>
             <CheckCircle className='h-4 w-4' />
             <AlertDescription>
@@ -184,7 +202,7 @@ const ElectionDetailCard = ({
           </Alert>
         )}
 
-        {expired && !election.hasVoted && (
+        {expired && !electionState.hasVoted && (
           <Alert>
             <Clock className='h-4 w-4' />
             <AlertDescription>

@@ -82,7 +82,6 @@ const ElectionDetail = () => {
         election={election}
         electionId={electionId!}
         selected={Number(selected)}
-        fetchElection={fetchElection}
       />
       <Card>
         <CardContent className='flex flex-col md:flex-row gap-4 items-start justify-between'>
