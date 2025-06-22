@@ -1,4 +1,5 @@
 // src/router/index.tsx
+import RequireAuth from "@/components/RequireAuth";
 import MainLayout from "@/layouts/MainLayout";
 import CreatePage from "@/pages/CreatePage";
 import DashboardPage from "@/pages/DashboardPage";
@@ -9,7 +10,11 @@ import LoginPage from "@/pages/LoginPage";
 export const routes = [
   {
     path: "",
-    element: <MainLayout />,
+    element: (
+      <RequireAuth>
+        <MainLayout />
+      </RequireAuth>
+    ),
     children: [
       { path: "", element: <DashboardPage />, title: "Dashboard - BElection." },
       { path: "create", element: <CreatePage />, title: "Create - BElection." },
